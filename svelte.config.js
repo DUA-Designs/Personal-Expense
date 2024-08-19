@@ -1,18 +1,13 @@
+ 
 import adapter from '@sveltejs/adapter-static';
-import {
-    vitePreprocess
-} from '@sveltejs/kit/vite';
-
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-    preprocess: vitePreprocess(),
-
-      kit: {
-        adapter: adapter(),
-        paths: {
-            base:  '/Personal-Expense',
-        }
-    }
+	  kit: {
+    adapter: adapter(),
+    outDir: 'build', 
+    base:'/Personal-Expense' // Output built files to 'build' directory
+    
+	  }
 };
 
 export default config;
