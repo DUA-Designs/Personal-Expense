@@ -6,7 +6,7 @@ const config = {
     adapter: adapter(),
     outDir: 'build', // Output built files to 'build' directory
     
-
+	  }
 };
 
 export default config;
