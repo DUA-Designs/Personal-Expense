@@ -1,13 +1,14 @@
- 
 import adapter from '@sveltejs/adapter-static';
+
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-	  kit: {
+  kit: {
     adapter: adapter(),
-    outDir: 'build', 
-    base:'/Personal-Expense' // Output built files to 'build' directory
-    
-	  }
+    outDir: 'build', // Output built files to 'build' directory
+    paths: {
+      base: '/Personal-Expense',
+    },
+  },
 };
 
 export default config;
