@@ -5,8 +5,7 @@ const config = {
 	  kit: {
     adapter: adapter(),
     outDir: 'build', // Output built files to 'build' directory
-    base: 'https://dua-designs.github.io/Personal-Expense', // Don't forget to update this too!
-  },
+    
 
 };
 
