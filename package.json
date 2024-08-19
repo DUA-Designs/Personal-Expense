@@ -1,9 +1,9 @@
 {
 	"name": "frontend",
 	"version": "0.0.1",
-	 "homepage": "https://dua-designs.github.io/Personal-Expense",
+	"homepage": "https://dua-designs.github.io/Personal-Expense",
 	"scripts": {
-		"predeploy": "npm run build",
+		"predeploy": "npm run dev",
 		"deploy": "gh-pages -d build",
 		"dev": "vite dev",
 		"build": "vite build",
