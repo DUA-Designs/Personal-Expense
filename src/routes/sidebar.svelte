@@ -1,4 +1,5 @@
 <script>
+import { base } from '$app/paths';
   import { Sidebar, SidebarGroup, SidebarItem, SidebarWrapper, SidebarDropdownItem, SidebarDropdownWrapper, NavLi } from 'flowbite-svelte';
   import { ChartPieSolid, GridSolid, CartSolid, MailBoxSolid, UserSolid, ArrowRightToBracketOutline, EditOutline, CaretRightOutline, TagSolid } from 'flowbite-svelte-icons';
   let spanClass = 'flex-1 ms-3 whitespace-nowrap';
@@ -12,7 +13,7 @@
 <Sidebar {activeUrl} {activeClass} {nonActiveClass}>
   <SidebarWrapper class="bg-white rounded-none">
     <SidebarGroup  >
-      <SidebarItem label="Dashboard" href="/"  >
+      <SidebarItem label="Dashboard" href="{base}/"  >
         <svelte:fragment slot="icon">
           <ChartPieSolid class="w-6 h-6 text-gray-500 transition duration-75 text-custom-lightGreen group-hover:text-gray-900 dark:group-hover:text-white" />
         
@@ -23,7 +24,7 @@
 
       
  
-  <SidebarItem label="Transactions" href="/transactions">
+  <SidebarItem label="Transactions" href="{base}/transactions">
         <svelte:fragment slot="icon">
         <Icon icon="mingcute:transfer-fill"  class="w-6 h-6 text-gray-500 transition duration-75 text-custom-lightGreen "  style="color: #5ebc67" />
  
@@ -32,39 +33,39 @@
   
  
  
-  <SidebarItem label="Budget" href="/budget">
+  <SidebarItem label="Budget" href="{base}/budget">
         <svelte:fragment slot="icon">
           <Icon icon="ph:wallet-fill"   class="w-6 h-6 text-gray-500 transition duration-75 text-custom-lightGreen group-hover:text-gray-900 dark:group-hover:text-white" style="color: #5ebc67" /> 
         </svelte:fragment>
       </SidebarItem> 
       
 
-        <SidebarItem label="Reports" href="/reports">
+        <SidebarItem label="Reports" href="{base}/reports">
         <svelte:fragment slot="icon">
         <Icon icon="icon-park-solid:table-report" class="w-6 h-6 text-gray-500 transition duration-75 text-custom-lightGreen group-hover:text-gray-900 dark:group-hover:text-white"  style="color: #5ebc67" />
         
         </svelte:fragment>
       </SidebarItem> 
  
-        <SidebarItem label="Categories" href="/categories">
+        <SidebarItem label="Categories" href="{base}/categories">
         <svelte:fragment slot="icon">
-          <Icon icon="ic:round-category" class="w-6 h-6 text-gray-500 transition duration-75 text-custom-lightGreen  " style="color: #5ebc67"/>
+          <Icon icon="ic:round-category" class="w-6 h-6 text-gray-500 transition duration-75 text-custom-lightGreen  " style="color: #5ebc67"{base}/>
         </svelte:fragment>
       </SidebarItem>
  
-  <SidebarItem label="Tags" href="/tags">
+  <SidebarItem label="Tags" href="{base}/tags">
         <svelte:fragment slot="icon">
           <TagSolid class="w-6 h-6 text-gray-500 transition duration-75 text-custom-lightGreen group-hover:text-gray-900 dark:group-hover:text-white" />
         </svelte:fragment>
       </SidebarItem>
  
-  <SidebarItem label="Accounts" href="/accounts">
+  <SidebarItem label="Accounts" href="{base}/accounts">
         <svelte:fragment slot="icon">
           <Icon icon="mdi:bank"  style="color: #5ebc67" class="w-6 h-6" />
         </svelte:fragment>
       </SidebarItem>
  
-  <SidebarItem label="Income" href="/income">
+  <SidebarItem label="Income" href="{base}/income">
         <svelte:fragment slot="icon">
         <Icon icon="tdesign:undertake-transaction"  style="color: #5ebc67" class="w-6 h-6" />
           

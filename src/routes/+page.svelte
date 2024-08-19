@@ -211,6 +211,7 @@ function generateFor90Days(startDate = new Date()) {
       color: "#333"
     }
   }
+      var transactionCount=0;
   const data = [];
   const numPeriods = 3;
   listCategory = [];
@@ -263,6 +264,7 @@ function generateForMonth(startDate = new Date()) {
   const daysInMonth = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0).getDate();
   const weeksInMonth = Math.ceil(daysInMonth / 7);
   const data = [];
+  Statistics={};
 listCategory=[];
 rankingList=[];
   for (let i = 0; i < weeksInMonth; i++) {
@@ -285,6 +287,8 @@ rankingList=[];
  
   }
       temporaryCategory.push({ category: transaction.category, value: transaction.amount })
+
+      transactionCount+=1;
 });
 
     }
@@ -306,7 +310,8 @@ rankingList=[];
 
  rankingList.sort((a,b) => Math.abs(b.y)-Math.abs(a.y));
  
-
+Statistics.pastWeek = { totalAmount: pastWeekTotal };
+Statistics.currentWeek = { totalAmount: currentWeekTotal, transactionCount: transactionCount };
   return data;
 }
 
@@ -353,6 +358,8 @@ rankingList=[];
 
           transactionCount+=1;
 
+          
+
         }
       });
 
@@ -373,6 +380,8 @@ rankingList=[];
     : "":""
 })
 currentWeekTotal+=total;
+
+
 
     data.push({ x: dateString, y: Math.abs(total) });
   } 

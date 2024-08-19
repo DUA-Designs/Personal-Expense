@@ -129,15 +129,15 @@ button:focus:not(:focus-visible) {
     padding-right: 0.75rem;
 		
 }
-.slot>div>{
+.slot > div >{
 	height: 100%;
 }
-.slot>div>div{
+.slot > div > div{
 	height: 100%;
 	overflow-y: auto;
 	overflow-x: hidden;
 }
- .contentDiv>div{
+ .contentDiv > div{
 	display: flex;
 	flex-direction: column;
 	
