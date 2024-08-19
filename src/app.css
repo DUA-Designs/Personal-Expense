@@ -129,7 +129,7 @@ button:focus:not(:focus-visible) {
     padding-right: 0.75rem;
 		
 }
-.slot > div >{
+.slot > div {
 	height: 100%;
 }
 .slot > div > div{
