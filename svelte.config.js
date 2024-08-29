@@ -6,7 +6,7 @@ const config = {
     kit: {
         appDir: 'app', // Required as the default is _app
         adapter: adapter(),
-        paths:{base:"Personal-Expense"}
+        paths:{base:"/Personal-Expense"}
     },
     preprocess: [vitePreprocess()]
 };
