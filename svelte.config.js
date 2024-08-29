@@ -1,27 +1,13 @@
-
-import adapter from '@sveltejs/adapter-node';
+import adapter from '@sveltejs/adapter-static';
+import { vitePreprocess } from '@sveltejs/kit/vite';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-  kit: {
-   	adapter: adapter(),
-    outDir: 'build',
-    paths: {
-      base: '/Personal-Expense',
+    kit: {
+        appDir: 'app', // Required as the default is _app
+        adapter: adapter(),
+        paths:{base:"Personal-Expense"}
     },
-     prerender: {
-  handleHttpError: ({ status, url }) => {
-    if (status === 404 && url && url.pathname === '/') {
-      return {
-        status: 301,
-        redirect: '/Personal-Expense',
-      };
-    }
-    return null;
-  },
-},
-
-  },
+    preprocess: vitePreprocess()
 };
-
 export default config;

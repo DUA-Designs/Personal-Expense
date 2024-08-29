@@ -3,9 +3,10 @@ import { base } from '$app/paths';
   import { Sidebar, SidebarGroup, SidebarItem, SidebarWrapper, SidebarDropdownItem, SidebarDropdownWrapper, NavLi } from 'flowbite-svelte';
   import { ChartPieSolid, GridSolid, CartSolid, MailBoxSolid, UserSolid, ArrowRightToBracketOutline, EditOutline, CaretRightOutline, TagSolid } from 'flowbite-svelte-icons';
   let spanClass = 'flex-1 ms-3 whitespace-nowrap';
-  import Icon from '@iconify/svelte';
+  
 	import { page } from '$app/stores';
-    $: activeUrl = $page.url.pathname;
+	import Icon from '@iconify/svelte';
+   let  activeUrl = $page.url.pathname;
   let activeClass = 'flex  hover:no-underline  items-center p-2 text-base font-normal text-primary-900 bg-primary-200 dark:bg-primary-700 rounded-lg dark:text-white hover:bg-primary-100 dark:hover:bg-gray-700';
   let nonActiveClass = 'flex  hover:no-underline items-center p-2 text-base font-normal text-green-900 rounded-lg dark:text-white hover:bg-green-100 dark:hover:bg-green-700';
 </script>

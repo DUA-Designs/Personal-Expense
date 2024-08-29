@@ -19,11 +19,7 @@
   </NavBrand>
   <NavHamburger  />
   <NavUl class="py-0">
-  <!-- <ButtonGroup class="*:!ring-primary-700">
-  <Button><NavLi href="/">Home</NavLi></Button>
-  <Button> <NavLi href="/about">About</NavLi></Button>
-  <Button>Messages</Button>
-</ButtonGroup> -->
+ 
 <Toolbar class="py-0">
   <NavLi href="/"> <ToolbarButton  >     <HomeOutline class="w-6 h-6 text-custom-lightGreen" /> </ToolbarButton></NavLi>
      <ToolbarButton> <Icon icon="line-md:bell-loop" class="w-6 h-6 text-custom-lightGreen"/> </ToolbarButton>

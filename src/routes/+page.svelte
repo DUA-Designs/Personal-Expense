@@ -1,9 +1,12 @@
  
-
+ 
  <script>
-  import { Tabs, TabItem, ListgroupItem, Badge, Tooltip, Popover, Datepicker } from 'flowbite-svelte';
+  
+  import { Tabs, TabItem, ListgroupItem, Badge, Tooltip, Popover, Datepicker, Checkbox, FloatingLabelInput } from 'flowbite-svelte';
   import { Listgroup } from "flowbite-svelte";
-  import { AdjustmentsHorizontalSolid, ArrowDownOutline, DownloadSolid, MessagesSolid, ShoppingBagOutline, ShoppingBagSolid, UserCircleSolid } from 'flowbite-svelte-icons';
+   
+
+  import { AdjustmentsHorizontalSolid, ArrowDownOutline, ChevronUpOutline, DownloadSolid, MessagesSolid, ShoppingBagOutline, ShoppingBagSolid, UserCircleSolid } from 'flowbite-svelte-icons';
   let placement;
   let icons = [
     // { name: 'Food', icon: UserCircleSolid },
@@ -174,7 +177,134 @@ var transactionData = {
 { description: "SALON SERVICES", amount: -60, category: "Miscellaneous", type: "Debit", balance: 9630 },
 { description: "FOOD DELIVERY", amount: -35, category: "Food", type: "Debit", balance: 9595 },
 { description: "TAXI FARE", amount: -25, category: "Travel", type: "Debit", balance: 9570 },
+],
+
+"2024-08-20": [
+  {
+    description: "PAYTM 9876543210",
+    amount: -100,
+    category: "Entertainment",
+    type: "Debit",
+    balance: 10000
+  },
+  {
+    description: "UBER INVOICE 123456",
+    amount: -50,
+    category: "Shopping",
+    type: "Debit",
+    balance: 9950
+  },
+  {
+    description: "CREDIT CARD REWARD",
+    amount: 200,
+    category: "Miscellaneous",
+    type: "Credit",
+    balance: 10150
+  },
+  {
+    description: "AIRBNB BOOKING",
+    amount: -500,
+    category: "Travel",
+    type: "Debit",
+    balance: 9650
+  },
+  {
+    description: "GROCERY STORE",
+    amount: -75,
+    category: "Food",
+    type: "Debit",
+    balance: 9575
+  }
+],
+
+"2024-08-21": [
+  {
+    "description": "Starbucks Coffee",
+    "amount": -5,
+    "category": "Food",
+    "type": "Debit",
+    "balance": 9500
+  },
+  {
+    "description": "Amazon Prime Subscription",
+    "amount": -15,
+    "category": "Entertainment",
+    "type": "Debit",
+    "balance": 9485
+  },
+  {
+    "description": "Gas Station Fuel",
+    "amount": -50,
+    "category": "Transportation",
+    "type": "Debit",
+    "balance": 9435
+  },
+  {
+    "description": "Salary Deposit",
+    "amount": 5000,
+    "category": "Miscellaneous",
+    "type": "Credit",
+    "balance": 14435
+  },
+  {
+    "description": "Grocery Store Purchase",
+    "amount": -30,
+    "category": "Food",
+    "type": "Debit",
+    "balance": 14405
+  }
 ]
+
+,"2024-08-23":
+[
+{
+"description": "ZOMATO ORDER 1234567890",
+"amount": -200,
+"category": "Food",
+"type": "Debit",
+"balance": 9800
+},
+{
+"description": "OYO ROOMS BOOKING 9876543210",
+"amount": -1500,
+"category": "Travel",
+"type": "Debit",
+"balance": 7500
+},
+{
+"description": "MISCELLANEOUS EXPENSES",
+"amount": -100,
+"category": "Miscellaneous",
+"type": "Debit",
+"balance": 7400
+}
+]
+,
+"2024-08-22":
+[
+{
+"description": "FLIPKART ORDER 9876543210",
+"amount": -2500,
+"category": "Shopping",
+"type": "Debit",
+"balance": 10500
+},
+{
+"description": "SWIGGY ORDER 1234567890",
+"amount": -150,
+"category": "Food",
+"type": "Debit",
+"balance": 10350
+},
+{
+"description": "BOOKMYSHOW TICKETS 9876543210",
+"amount": -200,
+"category": "Entertainment",
+"type": "Debit",
+"balance": 10150
+}
+]
+
 
 };
 
@@ -197,19 +327,10 @@ var rankingList=[];
    var options = {};
 
 function generateFor90Days(startDate = new Date()) {
-
+Statistics={}
      options.title= {
     text: '',
-    align: "center",
-    offsetX: 0,
-    offsetY: 5,
-    floating: false,
-    style: {
-      fontSize: "18px",
-      fontWeight: "bold",
-      fontFamily: "Inter, sans-serif",
-      color: "#333"
-    }
+    
   }
       var transactionCount=0;
   const data = [];
@@ -224,21 +345,26 @@ rankingList=[];
     let periodTotal = 0;
     for (let j = 0; j < periodLength; j++) {
       const dateString = new Date(periodStartDate.getTime() + j * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-      periodTotal += transactionData[dateString] ? transactionData[dateString].reduce((acc, transaction) => acc + transaction.amount, 0) : 0;
+      periodTotal += transactionData[dateString] ? transactionData[dateString].filter(item=>item["amount"]<0).reduce((acc, transaction) => acc + transaction.amount, 0) : 0;
 
       // listCategory updation goes here
-      transactionData[dateString] && transactionData[dateString].forEach(transaction => {
+      transactionData[dateString] && transactionData[dateString].filter(item=>item["amount"]<0).forEach(transaction => {
         const existingCategory = listCategory.find(c => c.category === transaction.category);
         if (existingCategory) {
           existingCategory.value += transaction.amount;
         } else {
           listCategory.push({ category: transaction.category, value: transaction.amount });
         }
+        transactionCount+=1;
       });
     }
     data.push({ x: `Month ${i + 1}`, y: Math.abs(periodTotal) });
   }
   rankingList=[...data].sort((a,b) => Math.abs(b.y)-Math.abs(a.y));
+
+Statistics.currentQuarter={totalAmount: listCategory.reduce((acc,item)=>acc+item.value,0), transactionCount: transactionCount}
+ 
+   
   return data;
 }
 
@@ -246,20 +372,11 @@ rankingList=[];
 
 
 function generateForMonth(startDate = new Date()) {
-
+Statistics={};
 
      options.title= {
     text: '',
-    align: "center",
-    offsetX: 0,
-    offsetY: 5,
-    floating: false,
-    style: {
-      fontSize: "18px",
-      fontWeight: "bold",
-      fontFamily: "Inter, sans-serif",
-      color: "#333"
-    }
+   
   }
   const daysInMonth = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0).getDate();
   const weeksInMonth = Math.ceil(daysInMonth / 7);
@@ -267,6 +384,7 @@ function generateForMonth(startDate = new Date()) {
   Statistics={};
 listCategory=[];
 rankingList=[];
+var transactionCount=0;
   for (let i = 0; i < weeksInMonth; i++) {
     const weekStartDate = new Date(startDate.getFullYear(), startDate.getMonth(), i * 7 + 1);
     const weekEndDate = new Date(startDate.getFullYear(), startDate.getMonth(), (i + 1) * 7);
@@ -292,7 +410,7 @@ rankingList=[];
 });
 
     }
-    console.log(temporaryCategory);
+    
  
     data.push({ x: `Week ${i + 1}`, y: Math.abs(weekTotal) });
     rankingList.push({
@@ -306,12 +424,12 @@ rankingList=[];
 })
 
   }
-  console.log(listCategory);
+  // console.log(listCategory);
 
  rankingList.sort((a,b) => Math.abs(b.y)-Math.abs(a.y));
  
-Statistics.pastWeek = { totalAmount: pastWeekTotal };
-Statistics.currentWeek = { totalAmount: currentWeekTotal, transactionCount: transactionCount };
+// Statistics.pastWeek = { totalAmount: pastWeekTotal };
+Statistics.currentMonth = { totalAmount: listCategory.reduce((acc,item)=>acc+item.value,0), transactionCount: transactionCount };
   return data;
 }
 
@@ -329,16 +447,7 @@ Statistics.currentWeek = { totalAmount: currentWeekTotal, transactionCount: tran
 
     options.title= {
     text: '',
-    align: "center",
-    offsetX: 0,
-    offsetY: 5,
-    floating: false,
-    style: {
-      fontSize: "18px",
-      fontWeight: "bold",
-      fontFamily: "Inter, sans-serif",
-      color: "#333"
-    }
+  
   }
 
   // if(ChartSelected!=="Pie" && ChartSelected!=="Line" && ChartSelected!=="Area"){
@@ -441,6 +550,7 @@ var today ;
 var dateString =particularDate || new Date().toISOString().split('T')[0];;
 Statistics={};
  
+ options.title.text=dateString;
 var currentDayTotal=0;
 var transactionCount=0;
   const transactions = transactionData[dateString] || [];
@@ -476,7 +586,7 @@ var transactionCount=0;
  
     return acc;
   }, []);
-  console.log(pastDayData);
+ 
 
 
  
@@ -499,20 +609,8 @@ data.forEach((currentItem) => {
                 ]
   }
 });
-console.log(data);
-options.title= {
-    text: dateString,
-    align: "center",
-    offsetX: 0,
-    offsetY: 5,
-    floating: false,
-    style: {
-      fontSize: "18px",
-      fontWeight: "bold",
-      fontFamily: "Inter, sans-serif",
-      color: "#333"
-    }
-  }
+ 
+ 
 
 
   return data.map(item => ({ x: item.x, y: Math.abs(item.y) }));
@@ -561,16 +659,7 @@ Statistics.currentDay = { totalAmount: currentDayTotal, transactionCount: transa
 
 options.title= {
     text: dateString,
-    align: "center",
-    offsetX: 0,
-    offsetY: 5,
-    floating: false,
-    style: {
-      fontSize: "18px",
-      fontWeight: "bold",
-      fontFamily: "Inter, sans-serif",
-      color: "#333"
-    }
+     
   }
 
  listCategory=data.map(item=>({category:item.x,value:item.y}));
@@ -578,6 +667,116 @@ options.title= {
 }
 
 
+
+function generateForRange(fromDate, toDate) {
+  // const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const data = [];
+  totalsByCategory = {};
+  listCategory = [];
+  rankingList = [];
+  Statistics = {};
+  var transactionCount = 0;
+
+  options.title = {
+    text: `${fromDate} - ${toDate}`,
+     
+  }
+
+  var currentRangeTotal = 0;
+  const startDate = new Date(fromDate);
+  const endDate = new Date(toDate);
+  const dateRange = [];
+
+  while (startDate <= endDate) {
+    const dateString = startDate.toISOString().split('T')[0];
+    dateRange.push(dateString);
+    startDate.setDate(startDate.getDate() + 1);
+  }
+
+  dateRange.forEach((dateString) => {
+    if (transactionData[dateString]) {
+      totalsByCategory[dateString] = {};
+      transactionData[dateString].forEach((transaction) => {
+        if (transaction.amount < 0) {
+          totalsByCategory[dateString][transaction.category] = (totalsByCategory[dateString][transaction.category] || 0) + transaction.amount;
+          transactionCount += 1;
+        }
+      });
+    }
+
+    const total = transactionData[dateString] ? transactionData[dateString].filter((transaction) => transaction.amount < 0).reduce((acc, transaction) => acc + transaction.amount, 0) : 0;
+    rankingList.push({
+      x: dateString,
+      y: Math.abs(total),
+      highlight: totalsByCategory[dateString] ? Object.keys(totalsByCategory[dateString]).length > 0 ? Object.keys(totalsByCategory[dateString]).reduce((a, b) => Math.abs(totalsByCategory[dateString][a]) < Math.abs(totalsByCategory[dateString][b]) ? b : a) : "" : ""
+    });
+    currentRangeTotal += total;
+    data.push({
+      x: dateString,
+      y: Math.abs(total)
+    });
+  });
+
+  for (let date in totalsByCategory) {
+    for (let category in totalsByCategory[date]) {
+      let existingCategory = listCategory.find(item => item.category === category);
+      if (existingCategory) {
+        existingCategory.value += totalsByCategory[date][category];
+      } else {
+        listCategory.push({
+          category,
+          value: totalsByCategory[date][category]
+        });
+      }
+    }
+  }
+
+  var pastRangeTotal = 0;
+  var pastRangeData = [];
+  const pastStartDate = new Date(fromDate);
+  pastStartDate.setDate(pastStartDate.getDate() - 1);
+  const pastEndDate = new Date(toDate);
+  pastEndDate.setDate(pastEndDate.getDate() - 1);
+  const pastDateRange = [];
+
+  while (pastStartDate <= pastEndDate) {
+    const pastDateString = pastStartDate.toISOString().split('T')[0];
+    pastDateRange.push(pastDateString);
+    pastStartDate.setDate(pastStartDate.getDate() + 1);
+  }
+
+  pastDateRange.forEach((pastDateString) => {
+    const pastTotal = transactionData[pastDateString] ? transactionData[pastDateString].filter((transaction) => transaction.amount < 0).reduce((acc, transaction) => acc + transaction.amount, 0) : 0;
+    pastRangeTotal += pastTotal;
+    pastRangeData.push({
+      x: pastDateString,
+      y: Math.abs(pastTotal)
+    });
+  });
+
+  data.forEach((item, index) => item.goals = [{
+    name: 'Past',
+    value: pastRangeData[index].y,
+    strokeHeight: 3,
+    strokeColor: '#775DD0'
+  }]);
+
+  Statistics.pastRange = {
+    totalAmount: pastRangeTotal
+  };
+  Statistics.currentRange = {
+    totalAmount: currentRangeTotal,
+    transactionCount: transactionCount
+  };
+
+  rankingList.sort((a, b) => Math.abs(b.y) - Math.abs(a.y));
+
+  if(data.length>7){
+    options.plotOptions.columnWidth="20%";
+  }
+
+  return data.reverse();
+}
 
  
 
@@ -590,26 +789,50 @@ var periodStats ;
 var  pastPeriodStats;
 
   
- 
+ var perPeriod;
 
-  function handlePeriodChange(args,dateSelected) {
+  function handlePeriodChange(args,dateSelected,event) { 
       dropdownOpen = false;
       PeriodSelected=args;
+if(event){
+  event.preventDefault();
+}
 
-
-       if ( args === 'custom' && dateSelected !== 'dateSelected') {
+       if ( args === 'custom' && dateSelected !== 'range') {
   
   // options.series[0].data =  getCustomDayDataArray();
   dataModal=true;
 }
 
-  if ( args === 'custom' && dateSelected === 'dateSelected') {
+  if ( args === 'custom' && dateSelected === 'range') {
    dataModal=false;
-     options.series[0].data =  getCurrentDayDataArray(document.getElementById("customRange").value);
+
+   
+
+   const urlParams = new URLSearchParams(window.location.search);
+
+   const fromDate = document.getElementById('fromDate').value;
+
+    const toDate = document.getElementById('toDate').value;
+ 
+ 
+if(fromDate  && toDate ){
+  options.series[0].data=generateForRange(fromDate,toDate);
+
+   periodStats=Statistics.currentRange;
+   pastPeriodStats=Statistics.pastRange;
+   calculateTrend();
+  perPeriod="per range";
+}
+else if(fromDate){ 
+     options.series[0].data =  getCurrentDayDataArray(fromDate);
   // options.series[0].data =  getCustomDayDataArray();
    periodStats=Statistics.currentDay;
    pastPeriodStats=Statistics.pastDay;
    calculateTrend();
+  perPeriod="per date";
+}
+   
 }
  
    if (args === 'Yesterday') {
@@ -618,6 +841,7 @@ var  pastPeriodStats;
   periodStats=Statistics.currentDay;
    pastPeriodStats=Statistics.pastDay;
    calculateTrend();
+    perPeriod="per date";
 }
   if (args === 'Today') {
   
@@ -625,17 +849,18 @@ var  pastPeriodStats;
   periodStats=Statistics.currentDay;
   pastPeriodStats=Statistics.pastDay;
   calculateTrend();
+   perPeriod="per date";
 }
  
 
  if (args === 'Last 7 days') {
-  
+    perPeriod="per week";
 
   if(ChartSelected==="Pie"){
 //  options.series =   generateForWeek().map(item=>item.x);
 //   options.labels=generateForWeek().map(item=>item.y);
  
-  } 
+  }  
   else{
      options.series[0].data =   generateForWeek();
         periodStats = Statistics.currentWeek;
@@ -646,12 +871,21 @@ var  pastPeriodStats;
 } 
  if (args === 'Last 30 days') {
   options.series[0].data =   generateForMonth();
-  
+      periodStats = Statistics.currentMonth;
+      pastPeriodStats={totalAmount:4000};
+           calculateTrend();
+            perPeriod="per month";
   // ...
 }    
  if (args === 'Last 90 days') {
   options.series[0].data =   generateFor90Days();
   // ...
+
+ 
+     periodStats = Statistics.currentQuarter;
+      pastPeriodStats={totalAmount:8000};
+           calculateTrend();
+            perPeriod="per quarter";
 }  
 
  
@@ -678,6 +912,7 @@ if(type==="StartChart"){
  
 type="Column";
 ChartSelected="Column";
+ perPeriod="per week";
 } 
 else{
    
@@ -688,7 +923,21 @@ else{
 if(type==="Column"){
   options= {
      
- 
+ title:{
+  
+    text: "",
+    align: "center",
+    offsetX: 0,
+    offsetY: 2,
+    floating: false,
+    style: {
+      fontSize: "18px",
+      fontWeight: "bold",
+      fontFamily: "Inter, sans-serif",
+      color: "#333"
+    }
+   
+ },
  
     colors: [  '#FDBA8C'],
     series: [
@@ -701,7 +950,7 @@ if(type==="Column"){
     ],
     chart: {
       type: 'bar',
-      height: '320px',
+      height: '340px',
       width:"100%",
       fontFamily: 'Inter, sans-serif',
       toolbar: {
@@ -722,7 +971,7 @@ if(type==="Column"){
 
         
       }
-
+ 
       
       
     },
@@ -731,7 +980,7 @@ if(type==="Column"){
         horizontal: false,
         columnWidth: '80%',
         borderRadiusApplication: 'end',
-        borderRadius: 8
+        borderRadius: 4
       }
     },
     tooltip: {
@@ -781,17 +1030,45 @@ if(type==="Column"){
       }
     },
     dataLabels: {
-      enabled: true
+      enabled: true,
+          offsetY: 20,
+           style: {
+      fontSize: '14px',
+      fontFamily: 'Helvetica, Arial, sans-serif',
+      fontWeight: 'bold',
+     
+  },
+  background: {
+    enabled: true,
+    foreColor: '#000',
+    padding: 4,
+    borderRadius: 2,
+    borderWidth: 0.1,
+    borderColor: '#000',
+    opacity: 0.9,
+    dropShadow: {
+      enabled: false,
+      top: 1,
+      left: 1,
+      blur: 2,
+      color: '#000',
+      opacity: 0.45
+    }
+  },
+ 
     },
     legend: {
       show: true,position: 'top',      showForSingleSeries: true,
-          customLegendItems: ['Current', 'Past'],
+          // customLegendItems: ['Current', 'Past'],
           markers: {
             fillColors: ['#FDBA8C', '#775DD0']
           }
     },
     xaxis: {
       floating: false,
+   
+      
+
       labels: {
         show: true,
         style: {
@@ -1075,10 +1352,11 @@ var trend;
 function calculateTrend() {
  
  
-  const pastTotal = pastPeriodStats.totalAmount;
-  const currentTotal = periodStats.totalAmount;
+  const pastTotal = Math.abs(pastPeriodStats.totalAmount);
+  const currentTotal = Math.abs(periodStats.totalAmount);
   const difference = currentTotal - pastTotal;
   const percentageDifference = (difference / pastTotal) * 100;
+ 
  
   if (percentageDifference > 0) {
     trend = { result: 'increased', percentage: percentageDifference.toFixed(2) };
@@ -1087,8 +1365,36 @@ function calculateTrend() {
   } else {
     trend = { result: 'same', percentage: 0 };
   }
- 
+ sortedList=[...listCategory];
 }
+ var sortedList ;
+ let sortState = { az: false, value: false };
+
+function sortTheList(e, checkbox) {
+  sortState[checkbox] = e.target.checked;
+  sortedList = [...listCategory];
+
+  if (sortState.az && sortState.value) {
+    // Both checkboxes are checked: sort by category (A-Z) and then by value (descending)
+    sortedList = sortedList.sort((a, b) => {
+      const categoryCompare = a.category.localeCompare(b.category);
+      if (categoryCompare === 0) {
+        return Math.abs(b.value) - Math.abs(a.value);
+      } else {
+        return categoryCompare;
+      }
+    });
+  } else if (sortState.az) {
+    // Only "A-Z" checkbox is checked: sort by category (A-Z)
+    sortedList = sortedList.sort((a, b) => a.category.localeCompare(b.category));
+  } else if (sortState.value) {
+    // Only "Spend" checkbox is checked: sort by value (descending)
+    sortedList = sortedList.sort((a, b) => Math.abs(b.value) - Math.abs(a.value));
+  }
+
+  
+}
+
 
 
 
@@ -1100,21 +1406,32 @@ function calculateTrend() {
 </svelte:head>
 
 <div class="flex w-full h-full gap-x-2">
-<Modal title="Pick a date or a range" bind:open={dataModal} autoclose >
- <form  on:submit={ () =>  handlePeriodChange("custom","dateSelected")}>
+<Modal title="Pick a date or a range" size="xs" bind:open={dataModal} autoclose >
+ <form  on:submit={ (event) =>  handlePeriodChange("custom","range",event)}>
  
   
 
    <div class="grid gap-6 mb-6 md:grid-cols-2">
     <div>
       <!-- <Label for="first_name" class="mb-2">First name</Label> -->
-         <Input type="date" name="customDateForChart" id="customRange" required />
+         <!-- <Input type="date" name="fromRange" id="customRange" required /> -->
+           <FloatingLabelInput style="outlined" id="fromDate" name="fromDate" type="date" required>
+    From
+  </FloatingLabelInput>
+
     </div>
     <div>
       <!-- <Label for="last_name" class="mb-2">Last name</Label> -->
-        <Input type="submit"  value="Confirm" />
+         <FloatingLabelInput style="outlined" id="toDate" name="toDate" type="date">
+    To
+  </FloatingLabelInput>
+
     </div>
   </div>
+  <div class="grid">
+     <Input type="submit"  value="Confirm" />
+  </div>
+  
 </form>
 
    
@@ -1152,11 +1469,11 @@ function calculateTrend() {
       </div>
       <div>
         <h5 class="leading-none text-2xl font-bold text-gray-900 dark:text-white pb-1"> {periodStats?periodStats.transactionCount:""}</h5>
-        <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Transactions per week</p>
+        <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Transactions {perPeriod}</p>
       </div>
     </div>
     <div>
-      <Tooltip triggeredBy=".trendChange" placement="left" trigger="hover" color="green" class="bg-white text-inherit">Compared to past period</Tooltip>
+      <Tooltip triggeredBy=".trendChange" placement="left" trigger="hover" color="light"   class="  text-inherit">Compared to past period</Tooltip>
 <div class="trendChange"> {#if options.series[0].data}
         
 
@@ -1200,7 +1517,7 @@ function calculateTrend() {
   <Chart   {options}      />
   <div class="grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between">
     <div class="flex justify-between items-center pt-5">
-      <Button class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 text-center inline-flex items-center dark:hover:text-white bg-transparent hover:bg-transparent dark:bg-transparent dark:hover:bg-transparent focus:ring-transparent dark:focus:ring-transparent py-0">{PeriodSelected}<ChevronDownOutline class="w-2.5 m-2.5 ms-1.5" /></Button>
+      <Button class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 text-center inline-flex items-center dark:hover:text-white   dark:bg-transparent dark:hover:bg-transparent focus:ring-transparent dark:focus:ring-transparent py-0" color="alternative">{PeriodSelected}<ChevronUpOutline class="w-2.5 m-2.5 ms-1.5" /></Button>
       <Dropdown class="w-40" offset="-6" bind:open={dropdownOpen} >
           <DropdownItem on:click={(event) => handlePeriodChange("Today")} >Today</DropdownItem>
         <DropdownItem on:click={(event) => handlePeriodChange("Yesterday")} >Yesterday</DropdownItem>
@@ -1219,7 +1536,7 @@ function calculateTrend() {
     </div>
 
 	 <div class="flex justify-between items-center pt-5">
-      <Button class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 text-center inline-flex items-center dark:hover:text-white bg-transparent hover:bg-transparent dark:bg-transparent dark:hover:bg-transparent focus:ring-transparent dark:focus:ring-transparent py-0">{ChartSelected}<ChevronDownOutline class="w-2.5 m-2.5 ms-1.5" /></Button>
+      <Button class=" text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 text-center inline-flex items-center dark:hover:text-white   dark:bg-transparent dark:hover:bg-transparent focus:ring-transparent dark:focus:ring-transparent py-0" color="alternative">{ChartSelected}<ChevronUpOutline class="w-2.5 m-2.5 ms-1.5" /></Button>
       <Dropdown class="w-40" offset="-6" bind:open={dropdownToggle}>
        <DropdownItem on:click={(event) => toggleCharts("Column")}>Column</DropdownItem>
         <DropdownItem on:click={(event) => toggleCharts("Bar")}>Bar</DropdownItem>
@@ -1242,12 +1559,33 @@ function calculateTrend() {
  <h3 class="text-gray-900 w-fit text-lg font-semibold dark:text-white">Statistics  - {PeriodSelected}</h3>
  <Tabs  tabStyle="underline"  contentClass="p-0   rounded-lg   mt-4  h-full flex flex-col contentDiv flex flex-col">
   <TabItem open title="Statistics"     >
+<div class="flex items-center gap-x-1 justify-between mb-2">
+ <Tooltip trigger="hover" triggeredBy=".Sortlist" color="light"  class="  text-inherit">Sort list</Tooltip>
+<p class="text-base font-semibold mb-2">Breakdown per Category</p>
+
+ <Button class=" text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 text-center inline-flex items-center dark:hover:text-white   dark:bg-transparent dark:hover:bg-transparent focus:ring-transparent dark:focus:ring-transparent py-0 Sortlist" color="alternative">  <Icon icon="iconoir:sort" width="1.5rem" height="1.5rem"  style="color: #5ebc67" /></Button>
  
- <p class="text-base font-semibold mb-2">Breakdown per Category</p>
+<Dropdown class="w-48 p-3 space-y-1 text-sm">
+  <li class="rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-600   ">
+    <Checkbox on:click={(event)=>sortTheList(event,"az")} checked={sortState.az}>A-Z <ArrowUpOutline/></Checkbox>
+     
+  </li>
+  
+  <li class="rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-600">
+    <Checkbox   on:click={(event)=>sortTheList(event,"value")} checked={sortState.value}>Spend <ArrowDownOutline/></Checkbox>
+  </li>
+  <!-- <li class="rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-600">
+    <Checkbox>Default checkbox</Checkbox>
+  </li> -->
+</Dropdown>
+</div> 
+  
+
+ 
  
        <Listgroup   class="w-full  scrollableList "   >
        
-{#each listCategory.sort((a, b) => Math.abs(b.value) - Math.abs(a.value)) as item, index}
+{#each sortedList as item, index}
 <ListgroupItem class={`text-gray-800 gap-1 ${index === 0 ? 'bg-[#fdba8c]' : index === 1 ? 'bg-[#ffd5b1]' : index === 2 ? 'bg-[#fff2e6]' : ''}`} >
 
 
@@ -1265,7 +1603,7 @@ function calculateTrend() {
   </TabItem>
   <TabItem title="Ranking" contentClass="p-0 bg-gray-50 rounded-lg dark:bg-gray-800 mt-0">
       <!-- <p class="text-base font-semibold mb-2"> per Category</p> -->
-        <Tooltip triggeredBy="#highlight" placement="bottom" trigger="hover" color="green" class="bg-white text-inherit">Observed Biggest Expend <Icon icon="streamline:money-graph-arrow-increase-ascend-growth-up-arrow-stats-graph-right-grow" width="1.2rem" height="1.2rem"  class="inline" style="color: #5ebc67" /></Tooltip>
+        <Tooltip triggeredBy="#highlight" placement="bottom" trigger="hover"  color="light" class="    text-inherit">Observed Biggest Expend <Icon icon="streamline:money-graph-arrow-increase-ascend-growth-up-arrow-stats-graph-right-grow" width="1.2rem" height="1.2rem"   class="inline" style="color: #5ebc67" /></Tooltip>
        <Listgroup   class="  scrollableList  "     >
  
 {#each  rankingList as item, index}
