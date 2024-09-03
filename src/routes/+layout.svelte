@@ -2,7 +2,7 @@
 	import Header  from './Header.svelte';
 	import Boards from './sidebar.svelte';
 	import '../app.css';
- 
+ export const prerender = true;
 </script>
 
 <div class="app">
