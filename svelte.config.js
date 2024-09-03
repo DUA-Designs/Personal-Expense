@@ -5,7 +5,9 @@ import adapter from '@sveltejs/adapter-static';
 const config = {
   kit: {
     adapter: adapter({
-      fallback: '/Personal-Expense/index.html'
+      fallback: '/Personal-Expense/index.html',
+       output: 'public', // Update this line
+
     }),
     paths: {
       base: "/Personal-Expense"
