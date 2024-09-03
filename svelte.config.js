@@ -9,7 +9,7 @@ const config = {
 			fallback: 'index.html'
 		}),
 		paths: {
-			base:  process.env.BASE_PATH
+			base:  "/Personal-Expense"
 		}
 	}
 };
